@@ -312,7 +312,7 @@ abstract class OnePica_AvaTax_Model_Service_Avatax_Abstract extends OnePica_AvaT
      * @param Mage_Sales_Model_Mysql4_Order_Invoice_Item_Collection|array $items
      * @return $this
      */
-    protected function _initProductCollection($items)
+    protected function _initProductCollection($items, $store_id = null)
     {
         $productIds = array();
         foreach ($items as $item) {
@@ -327,6 +327,9 @@ abstract class OnePica_AvaTax_Model_Service_Avatax_Abstract extends OnePica_AvaT
         $this->_productCollection = Mage::getModel('catalog/product')->getCollection()
             ->addAttributeToSelect('*')
             ->addAttributeToFilter('entity_id', array('in' => $productIds));
+        // add store filter for collection to load correct tax_class_id when called in admin area
+        if ($store_id)
+             $this->_productCollection->setStoreId($store_id);
         return $this;
     }
 
